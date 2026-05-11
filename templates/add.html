@@ -1,197 +1,197 @@
-<!-- templates/add.html -->
-
 <!DOCTYPE html>
-
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
     <title>登録</title>
 
-```
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<style>
-    body{
-        margin:0;
-        padding:20px;
-        padding-bottom:100px;
-        background:#dff7f2;
-        font-family:-apple-system,BlinkMacSystemFont,sans-serif;
-    }
+    <link rel="manifest" href="/manifest.json">
 
-    h1{
-        text-align:center;
-        color:#4d8f87;
-        margin-bottom:28px;
-        font-size:40px;
-    }
+    <meta name="theme-color" content="#66d6c2">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="えいてぃーちゃん">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
 
-    .card{
-        background:white;
-        border-radius:28px;
-        padding:22px;
-        margin-bottom:22px;
-        box-shadow:0 6px 18px rgba(0,0,0,0.08);
-    }
+    <style>
+        body{
+            margin:0;
+            padding:20px;
+            padding-bottom:100px;
+            background:#dff7f2;
+            font-family:-apple-system,BlinkMacSystemFont,sans-serif;
+            color:#333;
+        }
 
-    .section-title{
-        color:#4d8f87;
-        font-size:22px;
-        font-weight:bold;
-        margin-bottom:18px;
-    }
+        h1{
+            text-align:center;
+            color:#4d8f87;
+            margin-bottom:28px;
+            font-size:42px;
+        }
 
-    input,
-    textarea,
-    select{
-        width:100%;
-        box-sizing:border-box;
-        border:2px solid #d5f0ea;
-        border-radius:18px;
-        padding:16px;
-        font-size:16px;
-        margin-bottom:16px;
-    }
+        .card{
+            background:white;
+            border-radius:28px;
+            padding:22px;
+            margin-bottom:22px;
+            box-shadow:0 6px 18px rgba(0,0,0,0.08);
+        }
 
-    textarea{
-        min-height:120px;
-    }
+        .section-title{
+            color:#4d8f87;
+            font-size:24px;
+            font-weight:bold;
+            margin-bottom:20px;
+        }
 
-    button{
-        width:100%;
-        background:#74d2c1;
-        color:white;
-        border:none;
-        border-radius:18px;
-        padding:18px;
-        font-size:20px;
-        font-weight:bold;
-    }
+        input,
+        textarea,
+        select{
+            width:100%;
+            box-sizing:border-box;
+            border:2px solid #d5f0ea;
+            border-radius:18px;
+            padding:16px;
+            font-size:16px;
+            margin-bottom:18px;
+        }
 
-    .flash{
-        background:white;
-        border-radius:20px;
-        padding:18px;
-        margin-bottom:20px;
-    }
+        textarea{
+            min-height:120px;
+        }
 
-    .bottom-nav{
-        position:fixed;
-        left:0;
-        right:0;
-        bottom:0;
-        height:76px;
-        background:rgba(255,255,255,0.95);
-        backdrop-filter:blur(12px);
-        display:flex;
-        justify-content:space-around;
-        align-items:center;
-        border-top:1px solid #ccebe6;
-    }
+        button{
+            width:100%;
+            background:#74d2c1;
+            color:white;
+            border:none;
+            border-radius:18px;
+            padding:18px;
+            font-size:20px;
+            font-weight:bold;
+        }
 
-    .nav-item{
-        text-decoration:none;
-        color:#6d9d96;
-        font-weight:bold;
-        font-size:15px;
-    }
+        .flash{
+            background:white;
+            border-radius:20px;
+            padding:18px;
+            margin-bottom:20px;
+        }
 
-    .active{
-        color:#43b8a3;
-    }
-</style>
-```
+        .bottom-nav{
+            position:fixed;
+            left:0;
+            right:0;
+            bottom:0;
+            height:76px;
+            background:rgba(255,255,255,0.95);
+            backdrop-filter:blur(12px);
+            display:flex;
+            justify-content:space-around;
+            align-items:center;
+            border-top:1px solid #ccebe6;
+        }
 
+        .nav-item{
+            text-decoration:none;
+            color:#6d9d96;
+            font-weight:bold;
+            font-size:15px;
+        }
+
+        .active{
+            color:#43b8a3;
+        }
+    </style>
 </head>
 <body>
 
 <h1>ミックス登録</h1>
 
 {% with messages = get_flashed_messages() %}
-{% if messages %}
-{% for message in messages %} <div class="flash">
-{{ message }} </div>
-{% endfor %}
-{% endif %}
+    {% if messages %}
+        {% for message in messages %}
+            <div class="flash">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
 {% endwith %}
 
 <div class="card">
 
-```
-<div class="section-title">
-    OCR登録
-</div>
+    <div class="section-title">
+        OCR登録
+    </div>
 
-<form action="/add" method="POST" enctype="multipart/form-data">
+    <form action="/add" method="POST" enctype="multipart/form-data">
 
-    <input type="hidden" name="action" value="ocr">
+        <input type="hidden" name="action" value="ocr">
 
-    <input
-        type="file"
-        name="flavor_card"
-        accept="image/*"
-        required
-    >
+        <input
+            type="file"
+            name="flavor_card"
+            accept="image/*"
+            required
+        >
 
-    <button type="submit">
-        文字起こしする
-    </button>
+        <button type="submit">
+            文字起こしする
+        </button>
 
-</form>
-```
+    </form>
 
 </div>
 
 <div class="card">
 
-```
-<div class="section-title">
-    手入力登録
-</div>
+    <div class="section-title">
+        手入力登録
+    </div>
 
-<form action="/add" method="POST">
+    <form action="/add" method="POST">
 
-    <input type="hidden" name="action" value="manual">
+        <input type="hidden" name="action" value="manual">
 
-    <input
-        type="date"
-        name="smoked_date"
-        value="{{ today }}"
-        required
-    >
+        <input
+            type="date"
+            name="smoked_date"
+            value="{{ today }}"
+            required
+        >
 
-    <textarea
-        name="mix_text"
-        placeholder="例：ココア／ミント／バニラ"
-        required
-    ></textarea>
+        <textarea
+            name="mix_text"
+            placeholder="例：ココア／ミント／バニラ"
+            required
+        ></textarea>
 
-    <input
-        type="text"
-        name="staff_name"
-        placeholder="作ったスタッフ"
-    >
+        <input
+            type="text"
+            name="staff_name"
+            placeholder="作ったスタッフ"
+        >
 
-    <select name="rating">
-        <option value="">評価なし</option>
-        <option value="1">★1</option>
-        <option value="2">★2</option>
-        <option value="3">★3</option>
-        <option value="4">★4</option>
-        <option value="5">★5</option>
-    </select>
+        <select name="rating">
+            <option value="">評価なし</option>
+            <option value="1">★1</option>
+            <option value="2">★2</option>
+            <option value="3">★3</option>
+            <option value="4">★4</option>
+            <option value="5">★5</option>
+        </select>
 
-    <textarea
-        name="memo"
-        placeholder="メモ"
-    ></textarea>
+        <textarea
+            name="memo"
+            placeholder="メモ"
+        ></textarea>
 
-    <button type="submit">
-        保存する
-    </button>
+        <button type="submit">
+            保存する
+        </button>
 
-</form>
-```
+    </form>
 
 </div>
 

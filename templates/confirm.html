@@ -1,159 +1,159 @@
-<!-- templates/confirm.html -->
-
 <!DOCTYPE html>
-
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>読込結果確認</title>
+    <title>OCR確認</title>
 
-```
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<style>
-    body{
-        margin:0;
-        padding:20px;
-        padding-bottom:100px;
-        background:#dff7f2;
-        font-family:-apple-system,BlinkMacSystemFont,sans-serif;
-    }
+    <link rel="manifest" href="/manifest.json">
 
-    h1{
-        text-align:center;
-        color:#4d8f87;
-        margin-bottom:28px;
-        font-size:40px;
-    }
+    <meta name="theme-color" content="#66d6c2">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="えいてぃーちゃん">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
 
-    .card{
-        background:white;
-        border-radius:28px;
-        padding:22px;
-        margin-bottom:22px;
-        box-shadow:0 6px 18px rgba(0,0,0,0.08);
-    }
+    <style>
+        body{
+            margin:0;
+            padding:20px;
+            padding-bottom:100px;
+            background:#dff7f2;
+            font-family:-apple-system,BlinkMacSystemFont,sans-serif;
+            color:#333;
+        }
 
-    label{
-        display:block;
-        margin-bottom:10px;
-        color:#4d8f87;
-        font-weight:bold;
-        font-size:20px;
-    }
+        h1{
+            text-align:center;
+            color:#4d8f87;
+            margin-bottom:28px;
+            font-size:42px;
+        }
 
-    input,
-    textarea,
-    select{
-        width:100%;
-        box-sizing:border-box;
-        border:2px solid #d5f0ea;
-        border-radius:18px;
-        padding:16px;
-        font-size:16px;
-        margin-bottom:20px;
-    }
+        .card{
+            background:white;
+            border-radius:28px;
+            padding:22px;
+            margin-bottom:22px;
+            box-shadow:0 6px 18px rgba(0,0,0,0.08);
+        }
 
-    textarea{
-        min-height:140px;
-    }
+        label{
+            display:block;
+            margin-bottom:10px;
+            color:#4d8f87;
+            font-weight:bold;
+            font-size:20px;
+        }
 
-    button{
-        width:100%;
-        background:#74d2c1;
-        color:white;
-        border:none;
-        border-radius:18px;
-        padding:18px;
-        font-size:20px;
-        font-weight:bold;
-    }
+        input,
+        textarea,
+        select{
+            width:100%;
+            box-sizing:border-box;
+            border:2px solid #d5f0ea;
+            border-radius:18px;
+            padding:16px;
+            font-size:16px;
+            margin-bottom:20px;
+        }
 
-    .bottom-nav{
-        position:fixed;
-        left:0;
-        right:0;
-        bottom:0;
-        height:76px;
-        background:rgba(255,255,255,0.95);
-        backdrop-filter:blur(12px);
-        display:flex;
-        justify-content:space-around;
-        align-items:center;
-        border-top:1px solid #ccebe6;
-    }
+        textarea{
+            min-height:140px;
+        }
 
-    .nav-item{
-        text-decoration:none;
-        color:#6d9d96;
-        font-weight:bold;
-        font-size:15px;
-    }
+        button{
+            width:100%;
+            background:#74d2c1;
+            color:white;
+            border:none;
+            border-radius:18px;
+            padding:18px;
+            font-size:20px;
+            font-weight:bold;
+        }
 
-    .active{
-        color:#43b8a3;
-    }
-</style>
-```
+        .bottom-nav{
+            position:fixed;
+            left:0;
+            right:0;
+            bottom:0;
+            height:76px;
+            background:rgba(255,255,255,0.95);
+            backdrop-filter:blur(12px);
+            display:flex;
+            justify-content:space-around;
+            align-items:center;
+            border-top:1px solid #ccebe6;
+        }
 
+        .nav-item{
+            text-decoration:none;
+            color:#6d9d96;
+            font-weight:bold;
+            font-size:15px;
+        }
+
+        .active{
+            color:#43b8a3;
+        }
+    </style>
 </head>
 <body>
 
-<h1>読込結果確認</h1>
+<h1>OCR確認</h1>
 
 <div class="card">
 
-```
-<form action="/save" method="POST">
+    <form action="/save" method="POST">
 
-    <label>吸った日</label>
+        <label>吸った日</label>
 
-    <input
-        type="date"
-        name="smoked_date"
-        value="{{ smoked_date }}"
-        required
-    >
+        <input
+            type="date"
+            name="smoked_date"
+            value="{{ smoked_date }}"
+            required
+        >
 
-    <label>ミックス情報</label>
+        <label>ミックス情報</label>
 
-    <textarea
-        name="mix_text"
-        required
-    >{{ mix_text }}</textarea>
+        <textarea
+            name="mix_text"
+            required
+        >{{ mix_text }}</textarea>
 
-    <label>作ったスタッフ</label>
+        <label>作ったスタッフ</label>
 
-    <input
-        type="text"
-        name="staff_name"
-        placeholder="例：りょうた"
-    >
+        <input
+            type="text"
+            name="staff_name"
+            placeholder="例：ぽえ"
+        >
 
-    <label>評価</label>
+        <label>評価</label>
 
-    <select name="rating">
-        <option value="">評価なし</option>
-        <option value="1">★1</option>
-        <option value="2">★2</option>
-        <option value="3">★3</option>
-        <option value="4">★4</option>
-        <option value="5">★5</option>
-    </select>
+        <select name="rating">
+            <option value="">評価なし</option>
+            <option value="1">★1</option>
+            <option value="2">★2</option>
+            <option value="3">★3</option>
+            <option value="4">★4</option>
+            <option value="5">★5</option>
+        </select>
 
-    <label>メモ</label>
+        <label>メモ</label>
 
-    <textarea
-        name="memo"
-        placeholder="メモ"
-    ></textarea>
+        <textarea
+            name="memo"
+            placeholder="メモ"
+        ></textarea>
 
-    <button type="submit">
-        保存する
-    </button>
+        <button type="submit">
+            保存する
+        </button>
 
-</form>
-```
+    </form>
 
 </div>
 

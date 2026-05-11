@@ -1,121 +1,122 @@
-<!-- templates/search.html -->
-
 <!DOCTYPE html>
-
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
     <title>検索</title>
 
-```
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<style>
-    body{
-        margin:0;
-        padding:20px;
-        padding-bottom:100px;
-        background:#dff7f2;
-        font-family:-apple-system,BlinkMacSystemFont,sans-serif;
-        color:#333;
-    }
+    <link rel="manifest" href="/manifest.json">
 
-    h1{
-        text-align:center;
-        color:#4d8f87;
-        margin-bottom:28px;
-        font-size:40px;
-    }
+    <meta name="theme-color" content="#66d6c2">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="えいてぃーちゃん">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
 
-    .card{
-        background:white;
-        border-radius:28px;
-        padding:22px;
-        margin-bottom:22px;
-        box-shadow:0 6px 18px rgba(0,0,0,0.08);
-    }
+    <style>
+        body{
+            margin:0;
+            padding:20px;
+            padding-bottom:100px;
+            background:#dff7f2;
+            font-family:-apple-system,BlinkMacSystemFont,sans-serif;
+            color:#333;
+        }
 
-    label{
-        display:block;
-        margin-bottom:10px;
-        color:#4d8f87;
-        font-weight:bold;
-        font-size:18px;
-    }
+        h1{
+            text-align:center;
+            color:#4d8f87;
+            margin-bottom:28px;
+            font-size:42px;
+        }
 
-    input,
-    select{
-        width:100%;
-        box-sizing:border-box;
-        border:2px solid #d5f0ea;
-        border-radius:18px;
-        padding:16px;
-        font-size:16px;
-        margin-bottom:18px;
-    }
+        .card{
+            background:white;
+            border-radius:28px;
+            padding:22px;
+            margin-bottom:22px;
+            box-shadow:0 6px 18px rgba(0,0,0,0.08);
+        }
 
-    button{
-        width:100%;
-        background:#74d2c1;
-        color:white;
-        border:none;
-        border-radius:18px;
-        padding:18px;
-        font-size:20px;
-        font-weight:bold;
-    }
+        label{
+            display:block;
+            margin-bottom:10px;
+            color:#4d8f87;
+            font-weight:bold;
+            font-size:18px;
+        }
 
-    .date{
-        font-size:18px;
-        font-weight:bold;
-        color:#4d8f87;
-        margin-bottom:24px;
-    }
+        input,
+        select{
+            width:100%;
+            box-sizing:border-box;
+            border:2px solid #d5f0ea;
+            border-radius:18px;
+            padding:16px;
+            font-size:16px;
+            margin-bottom:18px;
+        }
 
-    .mix{
-        font-size:18px;
-        line-height:1.9;
-        margin-bottom:30px;
-        word-break:break-word;
-    }
+        button{
+            width:100%;
+            background:#74d2c1;
+            color:white;
+            border:none;
+            border-radius:18px;
+            padding:18px;
+            font-size:20px;
+            font-weight:bold;
+        }
 
-    .staff{
-        color:#666;
-        margin-bottom:14px;
-    }
+        .date{
+            font-size:18px;
+            font-weight:bold;
+            color:#4d8f87;
+            margin-bottom:24px;
+        }
 
-    .rating{
-        color:#f4b63d;
-        font-size:30px;
-    }
+        .mix{
+            font-size:18px;
+            line-height:1.9;
+            margin-bottom:30px;
+            word-break:break-word;
+        }
 
-    .bottom-nav{
-        position:fixed;
-        left:0;
-        right:0;
-        bottom:0;
-        height:76px;
-        background:rgba(255,255,255,0.95);
-        backdrop-filter:blur(12px);
-        display:flex;
-        justify-content:space-around;
-        align-items:center;
-        border-top:1px solid #ccebe6;
-    }
+        .staff{
+            color:#666;
+            margin-bottom:14px;
+        }
 
-    .nav-item{
-        text-decoration:none;
-        color:#6d9d96;
-        font-weight:bold;
-        font-size:15px;
-    }
+        .rating{
+            color:#f4b63d;
+            font-size:30px;
+        }
 
-    .active{
-        color:#43b8a3;
-    }
-</style>
-```
+        .bottom-nav{
+            position:fixed;
+            left:0;
+            right:0;
+            bottom:0;
+            height:76px;
+            background:rgba(255,255,255,0.95);
+            backdrop-filter:blur(12px);
+            display:flex;
+            justify-content:space-around;
+            align-items:center;
+            border-top:1px solid #ccebe6;
+        }
 
+        .nav-item{
+            text-decoration:none;
+            color:#6d9d96;
+            font-weight:bold;
+            font-size:15px;
+        }
+
+        .active{
+            color:#43b8a3;
+        }
+    </style>
 </head>
 <body>
 
@@ -123,79 +124,111 @@
 
 <div class="card">
 
-```
-<form action="/search" method="GET">
+    <form action="/search" method="GET">
 
-    <label>日付</label>
+        <label>日付</label>
 
-    <input
-        type="date"
-        name="date"
-        value="{{ search_date }}"
-    >
+        <input
+            type="date"
+            name="date"
+            value="{{ search_date }}"
+        >
 
-    <label>評価</label>
+        <label>評価</label>
 
-    <select name="rating">
-        <option value="">すべて</option>
-        <option value="1" {% if search_rating == "1" %}selected{% endif %}>★1</option>
-        <option value="2" {% if search_rating == "2" %}selected{% endif %}>★2</option>
-        <option value="3" {% if search_rating == "3" %}selected{% endif %}>★3</option>
-        <option value="4" {% if search_rating == "4" %}selected{% endif %}>★4</option>
-        <option value="5" {% if search_rating == "5" %}selected{% endif %}>★5</option>
-    </select>
+        <select name="rating">
+            <option value="">すべて</option>
 
-    <label>作ったスタッフ</label>
+            <option value="1"
+                {% if search_rating == "1" %}
+                selected
+                {% endif %}
+            >
+                ★1
+            </option>
 
-    <input
-        type="text"
-        name="staff"
-        placeholder="例：ぽえ"
-        value="{{ search_staff }}"
-    >
+            <option value="2"
+                {% if search_rating == "2" %}
+                selected
+                {% endif %}
+            >
+                ★2
+            </option>
 
-    <button type="submit">
-        検索する
-    </button>
+            <option value="3"
+                {% if search_rating == "3" %}
+                selected
+                {% endif %}
+            >
+                ★3
+            </option>
 
-</form>
-```
+            <option value="4"
+                {% if search_rating == "4" %}
+                selected
+                {% endif %}
+            >
+                ★4
+            </option>
+
+            <option value="5"
+                {% if search_rating == "5" %}
+                selected
+                {% endif %}
+            >
+                ★5
+            </option>
+
+        </select>
+
+        <label>作ったスタッフ</label>
+
+        <input
+            type="text"
+            name="staff"
+            placeholder="例：ぽえ"
+            value="{{ search_staff }}"
+        >
+
+        <button type="submit">
+            検索する
+        </button>
+
+    </form>
 
 </div>
 
 {% if has_search %}
 
-```
-{% for mix in mixes %}
+    {% for mix in mixes %}
 
-<div class="card">
+    <div class="card">
 
-    <div class="date">
-        {{ mix["smoked_date"] }}
+        <div class="date">
+            {{ mix["smoked_date"] }}
+        </div>
+
+        <div class="mix">
+            {{ mix["mix_text"] }}
+        </div>
+
+        {% if mix["staff_name"] %}
+        <div class="staff">
+            作った人：{{ mix["staff_name"] }}
+        </div>
+        {% endif %}
+
+        {% if mix["rating"] %}
+        <div class="rating">
+            {% for i in range(mix["rating"]) %}
+                ★
+            {% endfor %}
+        </div>
+        {% endif %}
+
     </div>
 
-    <div class="mix">
-        {{ mix["mix_text"] }}
-    </div>
-
-    {% if mix["staff_name"] %}
-    <div class="staff">
-        作った人：{{ mix["staff_name"] }}
-    </div>
-    {% endif %}
-
-    {% if mix["rating"] %}
-    <div class="rating">
-        {% for i in range(mix["rating"]) %}
-            ★
-        {% endfor %}
-    </div>
-    {% endif %}
-
-</div>
-
-{% endfor %}
-```
+    {% endfor %}
 
 {% endif %}
 
