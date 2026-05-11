@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>OCR確認</title>
+    <title>読込確認</title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -12,6 +12,17 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-title" content="えいてぃーちゃん">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
+
+    <link
+        rel="apple-touch-icon"
+        href="/static/icons/icon-192.png"
+    >
+
+    <script>
+        if ("serviceWorker" in navigator) {
+            navigator.serviceWorker.register("/sw.js");
+        }
+    </script>
 
     <style>
         body{
@@ -101,7 +112,7 @@
 </head>
 <body>
 
-<h1>OCR確認</h1>
+<h1>読込確認</h1>
 
 <div class="card">
 

@@ -13,6 +13,17 @@
     <meta name="apple-mobile-web-app-title" content="えいてぃーちゃん">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
 
+    <link
+        rel="apple-touch-icon"
+        href="/static/icons/icon-192.png"
+    >
+
+    <script>
+        if ("serviceWorker" in navigator) {
+            navigator.serviceWorker.register("/sw.js");
+        }
+    </script>
+
     <style>
         body{
             margin:0;
@@ -114,7 +125,7 @@
 </head>
 <body>
 
-<h1>えいてぃーちゃん履歴</h1>
+<h1>🐻履歴🐻</h1>
 
 {% with messages = get_flashed_messages() %}
     {% if messages %}

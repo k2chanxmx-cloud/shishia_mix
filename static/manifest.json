@@ -1,5 +1,5 @@
 {
-  "name": "えいてぃーちゃん吸ったミックス履歴",
+  "name": "えいてぃーちゃん履歴",
   "short_name": "えいてぃーちゃん",
   "start_url": "/",
   "scope": "/",
@@ -9,12 +9,12 @@
   "orientation": "portrait",
   "icons": [
     {
-      "src": "/static/icon-192.png",
+      "src": "/static/icons/icon-192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "/static/icon-512.png",
+      "src": "/static/icons/icon-512.png",
       "sizes": "512x512",
       "type": "image/png"
     }
