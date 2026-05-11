@@ -10,7 +10,7 @@ from google.cloud import vision
 from google.oauth2 import service_account
 
 
-APP_NAME = "えいてぃーちゃん吸ったミックス履歴"
+APP_NAME = "えいてぃーちゃん履歴"
 
 DATABASE_URL = os.environ.get("DATABASE_URL")
 
@@ -70,6 +70,44 @@ def get_vision_client():
         raise RuntimeError(
             f"Google認証JSONの読み込みに失敗しました: {e}"
         )
+
+
+def clean_mix_text(text):
+    remove_words = [
+        "Shisha Cafe&Bar",
+        "Shisha Cafe & Bar",
+        "* Eighty-80-",
+        "Eighty-80-",
+        "Eightty-80-",
+        "Eigthy-80-",
+        "Thank You!!",
+        "Thank You!",
+        "Thank You",
+    ]
+
+    lines = text.splitlines()
+    cleaned_lines = []
+
+    for line in lines:
+        line = line.strip()
+
+        if not line:
+            continue
+
+        should_remove = False
+
+        for word in remove_words:
+            if word.lower() in line.lower():
+                should_remove = True
+                break
+
+        if line.lower().startswith("staff"):
+            should_remove = True
+
+        if not should_remove:
+            cleaned_lines.append(line)
+
+    return "\n".join(cleaned_lines).strip()
 
 
 def ocr_image(image_file):
@@ -138,7 +176,9 @@ def add():
             return redirect(url_for("add"))
 
         try:
-            mix_text = ocr_image(image_file)
+            raw_text = ocr_image(image_file)
+
+            mix_text = clean_mix_text(raw_text)
 
         except Exception as e:
             flash(f"文字起こしに失敗しました: {e}")
