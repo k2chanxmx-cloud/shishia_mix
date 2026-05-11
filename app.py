@@ -1,10 +1,13 @@
 import os
+import json
 import psycopg2
 import psycopg2.extras
+
 from datetime import datetime, date
 
 from flask import Flask, render_template, request, redirect, url_for, flash
 from google.cloud import vision
+from google.oauth2 import service_account
 
 
 APP_NAME = "えいてぃーちゃん吸ったミックス履歴"
@@ -43,10 +46,37 @@ def init_db():
     conn.close()
 
 
+def get_vision_client():
+    google_credentials_json = os.environ.get("GOOGLE_CREDENTIALS_JSON")
+
+    if not google_credentials_json:
+        raise RuntimeError(
+            "GOOGLE_CREDENTIALS_JSON がRenderに設定されていません。"
+        )
+
+    try:
+        credentials_info = json.loads(google_credentials_json)
+
+        credentials = (
+            service_account.Credentials
+            .from_service_account_info(credentials_info)
+        )
+
+        return vision.ImageAnnotatorClient(
+            credentials=credentials
+        )
+
+    except Exception as e:
+        raise RuntimeError(
+            f"Google認証JSONの読み込みに失敗しました: {e}"
+        )
+
+
 def ocr_image(image_file):
-    client = vision.ImageAnnotatorClient()
+    client = get_vision_client()
 
     content = image_file.read()
+
     image = vision.Image(content=content)
 
     response = client.text_detection(image=image)
@@ -65,7 +95,10 @@ def ocr_image(image_file):
 @app.route("/")
 def index():
     conn = get_conn()
-    cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+
+    cur = conn.cursor(
+        cursor_factory=psycopg2.extras.RealDictCursor
+    )
 
     cur.execute("""
         SELECT
@@ -97,6 +130,7 @@ def add():
     today = date.today().isoformat()
 
     if request.method == "POST":
+
         image_file = request.files.get("flavor_card")
 
         if not image_file or image_file.filename == "":
@@ -105,6 +139,7 @@ def add():
 
         try:
             mix_text = ocr_image(image_file)
+
         except Exception as e:
             flash(f"文字起こしに失敗しました: {e}")
             return redirect(url_for("add"))
@@ -124,11 +159,31 @@ def add():
 
 @app.route("/save", methods=["POST"])
 def save():
-    smoked_date = request.form.get("smoked_date", "").strip()
-    mix_text = request.form.get("mix_text", "").strip()
-    staff_name = request.form.get("staff_name", "").strip()
-    rating = request.form.get("rating", "").strip()
-    memo = request.form.get("memo", "").strip()
+
+    smoked_date = request.form.get(
+        "smoked_date",
+        ""
+    ).strip()
+
+    mix_text = request.form.get(
+        "mix_text",
+        ""
+    ).strip()
+
+    staff_name = request.form.get(
+        "staff_name",
+        ""
+    ).strip()
+
+    rating = request.form.get(
+        "rating",
+        ""
+    ).strip()
+
+    memo = request.form.get(
+        "memo",
+        ""
+    ).strip()
 
     if not smoked_date:
         flash("吸った日を入力してください。")
@@ -139,9 +194,11 @@ def save():
         return redirect(url_for("add"))
 
     rating_value = None
+
     if rating:
         try:
             rating_value = int(rating)
+
         except ValueError:
             rating_value = None
 
@@ -173,15 +230,20 @@ def save():
     conn.close()
 
     flash("ミックス履歴を保存しました。")
+
     return redirect(url_for("index"))
 
 
 @app.route("/delete/<int:mix_id>", methods=["POST"])
 def delete(mix_id):
+
     conn = get_conn()
     cur = conn.cursor()
 
-    cur.execute("DELETE FROM mixes WHERE id = %s;", (mix_id,))
+    cur.execute(
+        "DELETE FROM mixes WHERE id = %s;",
+        (mix_id,)
+    )
 
     conn.commit()
 
@@ -189,7 +251,18 @@ def delete(mix_id):
     conn.close()
 
     flash("削除しました。")
+
     return redirect(url_for("index"))
+
+
+@app.route("/manifest.json")
+def manifest():
+    return app.send_static_file("manifest.json")
+
+
+@app.route("/sw.js")
+def service_worker():
+    return app.send_static_file("sw.js")
 
 
 init_db()
