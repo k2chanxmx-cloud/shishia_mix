@@ -90,6 +90,9 @@ def clean_mix_text(text):
 
     for line in lines:
         line = line.strip()
+        line = line.replace("　", "")  # 全角スペース削除
+        line = line.replace("\t", "")  # タブ削除
+        line = line.strip(" ・*　")    # 先頭の記号・空白削除
 
         if not line:
             continue
@@ -107,7 +110,7 @@ def clean_mix_text(text):
         if not should_remove:
             cleaned_lines.append(line)
 
-    return "\n".join(cleaned_lines).strip()
+    return " / ".join(cleaned_lines).strip()
 
 
 def ocr_image(image_file):
