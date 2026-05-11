@@ -1,0 +1,4 @@
+Flask
+gunicorn
+google-cloud-vision
+psycopg2-binary

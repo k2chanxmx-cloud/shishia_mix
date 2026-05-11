@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>追加</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        body{
+            margin:0;
+            padding:20px;
+            background:#dff7f2;
+            font-family:-apple-system,BlinkMacSystemFont,sans-serif;
+        }
+
+        h1{
+            text-align:center;
+            color:#2f8f83;
+            margin-bottom:30px;
+        }
+
+        .card{
+            background:white;
+            border-radius:24px;
+            padding:24px;
+            box-shadow:0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        input[type=file]{
+            width:100%;
+            margin-bottom:20px;
+        }
+
+        button{
+            width:100%;
+            background:#66d6c2;
+            color:white;
+            border:none;
+            border-radius:16px;
+            padding:16px;
+            font-size:18px;
+            font-weight:bold;
+        }
+
+        .back{
+            display:block;
+            text-align:center;
+            margin-top:20px;
+            color:#2f8f83;
+            text-decoration:none;
+        }
+
+        .flash{
+            background:white;
+            padding:14px;
+            border-radius:14px;
+            margin-bottom:20px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>ミックス登録</h1>
+
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        {% for message in messages %}
+            <div class="flash">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+<div class="card">
+
+    <form
+        action="/add"
+        method="POST"
+        enctype="multipart/form-data"
+    >
+
+        <input
+            type="file"
+            name="flavor_card"
+            accept="image/*"
+            required
+        >
+
+        <button type="submit">
+            文字起こしする
+        </button>
+
+    </form>
+
+</div>
+
+<a href="/" class="back">
+    ← 戻る
+</a>
+
+</body>
+</html>

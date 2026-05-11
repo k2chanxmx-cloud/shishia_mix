@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>確認</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        body{
+            margin:0;
+            padding:20px;
+            background:#dff7f2;
+            font-family:-apple-system,BlinkMacSystemFont,sans-serif;
+        }
+
+        h1{
+            text-align:center;
+            color:#2f8f83;
+            margin-bottom:30px;
+        }
+
+        .card{
+            background:white;
+            border-radius:24px;
+            padding:24px;
+            box-shadow:0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        label{
+            display:block;
+            margin-top:18px;
+            margin-bottom:8px;
+            font-weight:bold;
+            color:#2f8f83;
+        }
+
+        textarea,
+        input,
+        select{
+            width:100%;
+            box-sizing:border-box;
+            border:2px solid #d8f3ee;
+            border-radius:16px;
+            padding:14px;
+            font-size:16px;
+        }
+
+        textarea{
+            min-height:180px;
+            resize:vertical;
+        }
+
+        button{
+            width:100%;
+            margin-top:25px;
+            background:#66d6c2;
+            color:white;
+            border:none;
+            border-radius:16px;
+            padding:16px;
+            font-size:18px;
+            font-weight:bold;
+        }
+
+        .back{
+            display:block;
+            text-align:center;
+            margin-top:20px;
+            color:#2f8f83;
+            text-decoration:none;
+        }
+    </style>
+</head>
+<body>
+
+<h1>OCR確認</h1>
+
+<div class="card">
+
+    <form action="/save" method="POST">
+
+        <label>
+            吸った日
+        </label>
+
+        <input
+            type="date"
+            name="smoked_date"
+            value="{{ smoked_date }}"
+            required
+        >
+
+        <label>
+            ミックス情報
+        </label>
+
+        <textarea
+            name="mix_text"
+            required
+        >{{ mix_text }}</textarea>
+
+        <label>
+            作ったスタッフ
+        </label>
+
+        <input
+            type="text"
+            name="staff_name"
+            placeholder="例：りょうた"
+        >
+
+        <label>
+            評価
+        </label>
+
+        <select name="rating">
+            <option value="">選択なし</option>
+            <option value="1">★1</option>
+            <option value="2">★2</option>
+            <option value="3">★3</option>
+            <option value="4">★4</option>
+            <option value="5">★5</option>
+        </select>
+
+        <label>
+            メモ
+        </label>
+
+        <textarea
+            name="memo"
+            placeholder="甘め・吸いやすい・ミルクティー感など"
+        ></textarea>
+
+        <button type="submit">
+            保存する
+        </button>
+
+    </form>
+
+</div>
+
+<a href="/add" class="back">
+    ← 戻る
+</a>
+
+</body>
+</html>
