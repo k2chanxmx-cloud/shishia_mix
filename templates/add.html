@@ -1,104 +1,205 @@
+<!-- templates/add.html -->
+
 <!DOCTYPE html>
+
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>追加</title>
+    <title>登録</title>
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+```
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <style>
-        body{
-            margin:0;
-            padding:20px;
-            background:#dff7f2;
-            font-family:-apple-system,BlinkMacSystemFont,sans-serif;
-        }
+<style>
+    body{
+        margin:0;
+        padding:20px;
+        padding-bottom:100px;
+        background:#dff7f2;
+        font-family:-apple-system,BlinkMacSystemFont,sans-serif;
+    }
 
-        h1{
-            text-align:center;
-            color:#2f8f83;
-            margin-bottom:30px;
-        }
+    h1{
+        text-align:center;
+        color:#4d8f87;
+        margin-bottom:28px;
+        font-size:40px;
+    }
 
-        .card{
-            background:white;
-            border-radius:24px;
-            padding:24px;
-            box-shadow:0 4px 12px rgba(0,0,0,0.08);
-        }
+    .card{
+        background:white;
+        border-radius:28px;
+        padding:22px;
+        margin-bottom:22px;
+        box-shadow:0 6px 18px rgba(0,0,0,0.08);
+    }
 
-        input[type=file]{
-            width:100%;
-            margin-bottom:20px;
-        }
+    .section-title{
+        color:#4d8f87;
+        font-size:22px;
+        font-weight:bold;
+        margin-bottom:18px;
+    }
 
-        button{
-            width:100%;
-            background:#66d6c2;
-            color:white;
-            border:none;
-            border-radius:16px;
-            padding:16px;
-            font-size:18px;
-            font-weight:bold;
-        }
+    input,
+    textarea,
+    select{
+        width:100%;
+        box-sizing:border-box;
+        border:2px solid #d5f0ea;
+        border-radius:18px;
+        padding:16px;
+        font-size:16px;
+        margin-bottom:16px;
+    }
 
-        .back{
-            display:block;
-            text-align:center;
-            margin-top:20px;
-            color:#2f8f83;
-            text-decoration:none;
-        }
+    textarea{
+        min-height:120px;
+    }
 
-        .flash{
-            background:white;
-            padding:14px;
-            border-radius:14px;
-            margin-bottom:20px;
-        }
-    </style>
+    button{
+        width:100%;
+        background:#74d2c1;
+        color:white;
+        border:none;
+        border-radius:18px;
+        padding:18px;
+        font-size:20px;
+        font-weight:bold;
+    }
+
+    .flash{
+        background:white;
+        border-radius:20px;
+        padding:18px;
+        margin-bottom:20px;
+    }
+
+    .bottom-nav{
+        position:fixed;
+        left:0;
+        right:0;
+        bottom:0;
+        height:76px;
+        background:rgba(255,255,255,0.95);
+        backdrop-filter:blur(12px);
+        display:flex;
+        justify-content:space-around;
+        align-items:center;
+        border-top:1px solid #ccebe6;
+    }
+
+    .nav-item{
+        text-decoration:none;
+        color:#6d9d96;
+        font-weight:bold;
+        font-size:15px;
+    }
+
+    .active{
+        color:#43b8a3;
+    }
+</style>
+```
+
 </head>
 <body>
 
 <h1>ミックス登録</h1>
 
 {% with messages = get_flashed_messages() %}
-    {% if messages %}
-        {% for message in messages %}
-            <div class="flash">
-                {{ message }}
-            </div>
-        {% endfor %}
-    {% endif %}
+{% if messages %}
+{% for message in messages %} <div class="flash">
+{{ message }} </div>
+{% endfor %}
+{% endif %}
 {% endwith %}
 
 <div class="card">
 
-    <form
-        action="/add"
-        method="POST"
-        enctype="multipart/form-data"
+```
+<div class="section-title">
+    OCR登録
+</div>
+
+<form action="/add" method="POST" enctype="multipart/form-data">
+
+    <input type="hidden" name="action" value="ocr">
+
+    <input
+        type="file"
+        name="flavor_card"
+        accept="image/*"
+        required
     >
 
-        <input
-            type="file"
-            name="flavor_card"
-            accept="image/*"
-            required
-        >
+    <button type="submit">
+        文字起こしする
+    </button>
 
-        <button type="submit">
-            文字起こしする
-        </button>
-
-    </form>
+</form>
+```
 
 </div>
 
-<a href="/" class="back">
-    ← 戻る
-</a>
+<div class="card">
+
+```
+<div class="section-title">
+    手入力登録
+</div>
+
+<form action="/add" method="POST">
+
+    <input type="hidden" name="action" value="manual">
+
+    <input
+        type="date"
+        name="smoked_date"
+        value="{{ today }}"
+        required
+    >
+
+    <textarea
+        name="mix_text"
+        placeholder="例：ココア／ミント／バニラ"
+        required
+    ></textarea>
+
+    <input
+        type="text"
+        name="staff_name"
+        placeholder="作ったスタッフ"
+    >
+
+    <select name="rating">
+        <option value="">評価なし</option>
+        <option value="1">★1</option>
+        <option value="2">★2</option>
+        <option value="3">★3</option>
+        <option value="4">★4</option>
+        <option value="5">★5</option>
+    </select>
+
+    <textarea
+        name="memo"
+        placeholder="メモ"
+    ></textarea>
+
+    <button type="submit">
+        保存する
+    </button>
+
+</form>
+```
+
+</div>
+
+<nav class="bottom-nav">
+    <a href="/" class="nav-item">履歴</a>
+    <a href="/add" class="nav-item active">登録</a>
+    <a href="/search" class="nav-item">検索</a>
+</nav>
 
 </body>
 </html>

@@ -1,164 +1,184 @@
+<!-- templates/index.html -->
+
 <!DOCTYPE html>
+
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
     <title>{{ app_name }}</title>
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+```
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <style>
-        body{
-            margin:0;
-            padding:20px;
-            background:#dff7f2;
-            font-family:-apple-system,BlinkMacSystemFont,sans-serif;
-            color:#333;
-        }
+<link rel="manifest" href="/manifest.json">
 
-        h1{
-            text-align:center;
-            color:#2f8f83;
-            margin-bottom:30px;
-        }
+<meta name="theme-color" content="#66d6c2">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="えいてぃーちゃん">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 
-        .add-button{
-            display:block;
-            width:100%;
-            background:#66d6c2;
-            color:white;
-            text-decoration:none;
-            text-align:center;
-            padding:16px;
-            border-radius:18px;
-            font-size:18px;
-            font-weight:bold;
-            margin-bottom:25px;
-            box-sizing:border-box;
-        }
+<style>
+    body{
+        margin:0;
+        padding:20px;
+        padding-bottom:100px;
+        background:#dff7f2;
+        font-family:-apple-system,BlinkMacSystemFont,sans-serif;
+        color:#333;
+    }
 
-        .card{
-            background:white;
-            border-radius:22px;
-            padding:18px;
-            margin-bottom:18px;
-            box-shadow:0 4px 12px rgba(0,0,0,0.08);
-        }
+    h1{
+        text-align:center;
+        color:#4d8f87;
+        margin-bottom:25px;
+        font-size:42px;
+    }
 
-        .date{
-            color:#2f8f83;
-            font-weight:bold;
-            margin-bottom:10px;
-        }
+    .card{
+        background:white;
+        border-radius:28px;
+        padding:22px;
+        margin-bottom:22px;
+        box-shadow:0 6px 18px rgba(0,0,0,0.08);
+    }
 
-        .mix{
-            white-space:pre-wrap;
-            line-height:1.7;
-            margin-bottom:14px;
-        }
+    .date{
+        font-size:18px;
+        font-weight:bold;
+        color:#4d8f87;
+        margin-bottom:24px;
+    }
 
-        .staff{
-            font-size:14px;
-            color:#666;
-            margin-bottom:10px;
-        }
+    .mix{
+        font-size:18px;
+        line-height:1.9;
+        margin-bottom:30px;
+        word-break:break-word;
+    }
 
-        .memo{
-            background:#f5fffd;
-            padding:12px;
-            border-radius:14px;
-            margin-top:10px;
-        }
+    .staff{
+        color:#666;
+        margin-bottom:14px;
+    }
 
-        .rating{
-            color:#ffb400;
-            font-size:20px;
-            margin-top:10px;
-        }
+    .rating{
+        color:#f4b63d;
+        font-size:30px;
+        margin-bottom:20px;
+    }
 
-        .delete-form{
-            margin-top:15px;
-        }
+    .memo{
+        background:#f7fffd;
+        padding:16px;
+        border-radius:18px;
+        margin-top:16px;
+    }
 
-        .delete-button{
-            background:#ff8d8d;
-            color:white;
-            border:none;
-            border-radius:12px;
-            padding:10px 14px;
-            cursor:pointer;
-        }
+    .delete-button{
+        background:#f5a0a0;
+        color:white;
+        border:none;
+        border-radius:14px;
+        padding:12px 16px;
+        font-size:14px;
+    }
 
-        .flash{
-            background:white;
-            padding:14px;
-            border-radius:14px;
-            margin-bottom:20px;
-        }
-    </style>
+    .flash{
+        background:white;
+        border-radius:20px;
+        padding:18px;
+        margin-bottom:20px;
+    }
+
+    .bottom-nav{
+        position:fixed;
+        left:0;
+        right:0;
+        bottom:0;
+        height:76px;
+        background:rgba(255,255,255,0.95);
+        backdrop-filter:blur(12px);
+        display:flex;
+        justify-content:space-around;
+        align-items:center;
+        border-top:1px solid #ccebe6;
+    }
+
+    .nav-item{
+        text-decoration:none;
+        color:#6d9d96;
+        font-weight:bold;
+        font-size:15px;
+    }
+
+    .active{
+        color:#43b8a3;
+    }
+</style>
+```
+
 </head>
 <body>
 
-<h1>{{ app_name }}</h1>
-
-<a href="/add" class="add-button">
-    ＋ 新しいミックスを登録
-</a>
+<h1>えいてぃーちゃん履歴</h1>
 
 {% with messages = get_flashed_messages() %}
-    {% if messages %}
-        {% for message in messages %}
-            <div class="flash">
-                {{ message }}
-            </div>
-        {% endfor %}
-    {% endif %}
+{% if messages %}
+{% for message in messages %} <div class="flash">
+{{ message }} </div>
+{% endfor %}
+{% endif %}
 {% endwith %}
 
 {% for mix in mixes %}
 
 <div class="card">
 
-    <div class="date">
-        {{ mix["smoked_date"] }}
-    </div>
+```
+<div class="date">
+    {{ mix["smoked_date"] }}
+</div>
 
-    <div class="mix">
-        {{ mix["mix_text"] }}
-    </div>
+<div class="mix">
+    {{ mix["mix_text"] }}
+</div>
 
-    {% if mix["staff_name"] %}
-    <div class="staff">
-        作った人：{{ mix["staff_name"] }}
-    </div>
-    {% endif %}
+{% if mix["staff_name"] %}
+<div class="staff">
+    作った人：{{ mix["staff_name"] }}
+</div>
+{% endif %}
 
-    {% if mix["rating"] %}
-    <div class="rating">
-        {% for i in range(mix["rating"]) %}
-            ★
-        {% endfor %}
-    </div>
-    {% endif %}
+{% if mix["rating"] %}
+<div class="rating">
+    {% for i in range(mix["rating"]) %}
+        ★
+    {% endfor %}
+</div>
+{% endif %}
 
-    {% if mix["memo"] %}
-    <div class="memo">
-        {{ mix["memo"] }}
-    </div>
-    {% endif %}
+{% if mix["memo"] %}
+<div class="memo">
+    {{ mix["memo"] }}
+</div>
+{% endif %}
 
-    <form
-        action="/delete/{{ mix['id'] }}"
-        method="POST"
-        class="delete-form"
-    >
-        <button class="delete-button">
-            削除
-        </button>
-    </form>
+<form action="/delete/{{ mix['id'] }}" method="POST">
+    <button class="delete-button">
+        削除
+    </button>
+</form>
+```
 
 </div>
 
 {% endfor %}
+
+<nav class="bottom-nav">
+    <a href="/" class="nav-item active">履歴</a>
+    <a href="/add" class="nav-item">登録</a>
+    <a href="/search" class="nav-item">検索</a>
+</nav>
 
 </body>
 </html>

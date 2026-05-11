@@ -1,11 +1,11 @@
-<!-- templates/confirm.html -->
+<!-- templates/search.html -->
 
 <!DOCTYPE html>
 
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>読込結果確認</title>
+    <title>検索</title>
 
 ```
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,6 +17,7 @@
         padding-bottom:100px;
         background:#dff7f2;
         font-family:-apple-system,BlinkMacSystemFont,sans-serif;
+        color:#333;
     }
 
     h1{
@@ -39,11 +40,10 @@
         margin-bottom:10px;
         color:#4d8f87;
         font-weight:bold;
-        font-size:20px;
+        font-size:18px;
     }
 
     input,
-    textarea,
     select{
         width:100%;
         box-sizing:border-box;
@@ -51,11 +51,7 @@
         border-radius:18px;
         padding:16px;
         font-size:16px;
-        margin-bottom:20px;
-    }
-
-    textarea{
-        min-height:140px;
+        margin-bottom:18px;
     }
 
     button{
@@ -67,6 +63,30 @@
         padding:18px;
         font-size:20px;
         font-weight:bold;
+    }
+
+    .date{
+        font-size:18px;
+        font-weight:bold;
+        color:#4d8f87;
+        margin-bottom:24px;
+    }
+
+    .mix{
+        font-size:18px;
+        line-height:1.9;
+        margin-bottom:30px;
+        word-break:break-word;
+    }
+
+    .staff{
+        color:#666;
+        margin-bottom:14px;
+    }
+
+    .rating{
+        color:#f4b63d;
+        font-size:30px;
     }
 
     .bottom-nav{
@@ -99,57 +119,43 @@
 </head>
 <body>
 
-<h1>読込結果確認</h1>
+<h1>検索</h1>
 
 <div class="card">
 
 ```
-<form action="/save" method="POST">
+<form action="/search" method="GET">
 
-    <label>吸った日</label>
+    <label>日付</label>
 
     <input
         type="date"
-        name="smoked_date"
-        value="{{ smoked_date }}"
-        required
-    >
-
-    <label>ミックス情報</label>
-
-    <textarea
-        name="mix_text"
-        required
-    >{{ mix_text }}</textarea>
-
-    <label>作ったスタッフ</label>
-
-    <input
-        type="text"
-        name="staff_name"
-        placeholder="例：りょうた"
+        name="date"
+        value="{{ search_date }}"
     >
 
     <label>評価</label>
 
     <select name="rating">
-        <option value="">評価なし</option>
-        <option value="1">★1</option>
-        <option value="2">★2</option>
-        <option value="3">★3</option>
-        <option value="4">★4</option>
-        <option value="5">★5</option>
+        <option value="">すべて</option>
+        <option value="1" {% if search_rating == "1" %}selected{% endif %}>★1</option>
+        <option value="2" {% if search_rating == "2" %}selected{% endif %}>★2</option>
+        <option value="3" {% if search_rating == "3" %}selected{% endif %}>★3</option>
+        <option value="4" {% if search_rating == "4" %}selected{% endif %}>★4</option>
+        <option value="5" {% if search_rating == "5" %}selected{% endif %}>★5</option>
     </select>
 
-    <label>メモ</label>
+    <label>作ったスタッフ</label>
 
-    <textarea
-        name="memo"
-        placeholder="メモ"
-    ></textarea>
+    <input
+        type="text"
+        name="staff"
+        placeholder="例：ぽえ"
+        value="{{ search_staff }}"
+    >
 
     <button type="submit">
-        保存する
+        検索する
     </button>
 
 </form>
@@ -157,10 +163,46 @@
 
 </div>
 
+{% if has_search %}
+
+```
+{% for mix in mixes %}
+
+<div class="card">
+
+    <div class="date">
+        {{ mix["smoked_date"] }}
+    </div>
+
+    <div class="mix">
+        {{ mix["mix_text"] }}
+    </div>
+
+    {% if mix["staff_name"] %}
+    <div class="staff">
+        作った人：{{ mix["staff_name"] }}
+    </div>
+    {% endif %}
+
+    {% if mix["rating"] %}
+    <div class="rating">
+        {% for i in range(mix["rating"]) %}
+            ★
+        {% endfor %}
+    </div>
+    {% endif %}
+
+</div>
+
+{% endfor %}
+```
+
+{% endif %}
+
 <nav class="bottom-nav">
     <a href="/" class="nav-item">履歴</a>
-    <a href="/add" class="nav-item active">登録</a>
-    <a href="/search" class="nav-item">検索</a>
+    <a href="/add" class="nav-item">登録</a>
+    <a href="/search" class="nav-item active">検索</a>
 </nav>
 
 </body>
