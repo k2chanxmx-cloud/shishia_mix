@@ -10,7 +10,7 @@ from google.cloud import vision
 from google.oauth2 import service_account
 
 
-APP_NAME = "えいてぃーちゃん履歴"
+APP_NAME = "えいてぃーちゃん吸ったミックス履歴"
 
 DATABASE_URL = os.environ.get("DATABASE_URL")
 
@@ -57,9 +57,8 @@ def get_vision_client():
     try:
         credentials_info = json.loads(google_credentials_json)
 
-        credentials = (
-            service_account.Credentials
-            .from_service_account_info(credentials_info)
+        credentials = service_account.Credentials.from_service_account_info(
+            credentials_info
         )
 
         return vision.ImageAnnotatorClient(
@@ -89,10 +88,16 @@ def clean_mix_text(text):
     cleaned_lines = []
 
     for line in lines:
-        line = line.strip()
-        line = line.replace("　", "")  # 全角スペース削除
-        line = line.replace("\t", "")  # タブ削除
-        line = line.strip(" ・*　")    # 先頭の記号・空白削除
+
+        line = (
+            line.replace("\u3000", "")
+                .replace("\u200b", "")
+                .replace("\xa0", "")
+                .replace("\t", "")
+                .strip()
+        )
+
+        line = line.strip(" ・*　")
 
         if not line:
             continue
@@ -110,7 +115,7 @@ def clean_mix_text(text):
         if not should_remove:
             cleaned_lines.append(line)
 
-    return " / ".join(cleaned_lines).strip()
+    return "／".join(cleaned_lines).strip()
 
 
 def ocr_image(image_file):
@@ -133,8 +138,44 @@ def ocr_image(image_file):
     return texts[0].description.strip()
 
 
-@app.route("/")
-def index():
+def save_mix(smoked_date, mix_text, staff_name, rating, memo):
+    rating_value = None
+
+    if rating:
+        try:
+            rating_value = int(rating)
+        except ValueError:
+            rating_value = None
+
+    conn = get_conn()
+    cur = conn.cursor()
+
+    cur.execute("""
+        INSERT INTO mixes (
+            smoked_date,
+            mix_text,
+            staff_name,
+            rating,
+            memo,
+            created_at
+        )
+        VALUES (%s, %s, %s, %s, %s, %s);
+    """, (
+        smoked_date,
+        mix_text,
+        staff_name,
+        rating_value,
+        memo,
+        datetime.now()
+    ))
+
+    conn.commit()
+
+    cur.close()
+    conn.close()
+
+
+def get_all_mixes():
     conn = get_conn()
 
     cur = conn.cursor(
@@ -159,10 +200,18 @@ def index():
     cur.close()
     conn.close()
 
+    return mixes
+
+
+@app.route("/")
+def index():
+    mixes = get_all_mixes()
+
     return render_template(
         "index.html",
         app_name=APP_NAME,
-        mixes=mixes
+        mixes=mixes,
+        active_page="history"
     )
 
 
@@ -172,31 +221,85 @@ def add():
 
     if request.method == "POST":
 
-        image_file = request.files.get("flavor_card")
+        action = request.form.get("action", "")
 
-        if not image_file or image_file.filename == "":
-            flash("フレーバーカード写真を選択してください。")
-            return redirect(url_for("add"))
+        if action == "ocr":
 
-        try:
-            raw_text = ocr_image(image_file)
+            image_file = request.files.get("flavor_card")
 
-            mix_text = clean_mix_text(raw_text)
+            if not image_file or image_file.filename == "":
+                flash("フレーバーカード写真を選択してください。")
+                return redirect(url_for("add"))
 
-        except Exception as e:
-            flash(f"文字起こしに失敗しました: {e}")
-            return redirect(url_for("add"))
+            try:
+                raw_text = ocr_image(image_file)
 
-        return render_template(
-            "confirm.html",
-            app_name=APP_NAME,
-            smoked_date=today,
-            mix_text=mix_text
-        )
+                mix_text = clean_mix_text(raw_text)
+
+            except Exception as e:
+                flash(f"文字起こしに失敗しました: {e}")
+                return redirect(url_for("add"))
+
+            return render_template(
+                "confirm.html",
+                app_name=APP_NAME,
+                smoked_date=today,
+                mix_text=mix_text,
+                active_page="add"
+            )
+
+        if action == "manual":
+
+            smoked_date = request.form.get(
+                "smoked_date",
+                ""
+            ).strip()
+
+            mix_text = request.form.get(
+                "mix_text",
+                ""
+            ).strip()
+
+            staff_name = request.form.get(
+                "staff_name",
+                ""
+            ).strip()
+
+            rating = request.form.get(
+                "rating",
+                ""
+            ).strip()
+
+            memo = request.form.get(
+                "memo",
+                ""
+            ).strip()
+
+            if not smoked_date:
+                flash("吸った日を入力してください。")
+                return redirect(url_for("add"))
+
+            if not mix_text:
+                flash("ミックス情報を入力してください。")
+                return redirect(url_for("add"))
+
+            save_mix(
+                smoked_date=smoked_date,
+                mix_text=mix_text,
+                staff_name=staff_name,
+                rating=rating,
+                memo=memo
+            )
+
+            flash("ミックス履歴を保存しました。")
+
+            return redirect(url_for("index"))
 
     return render_template(
         "add.html",
-        app_name=APP_NAME
+        app_name=APP_NAME,
+        today=today,
+        active_page="add"
     )
 
 
@@ -236,45 +339,102 @@ def save():
         flash("ミックス情報を入力してください。")
         return redirect(url_for("add"))
 
-    rating_value = None
-
-    if rating:
-        try:
-            rating_value = int(rating)
-
-        except ValueError:
-            rating_value = None
-
-    conn = get_conn()
-    cur = conn.cursor()
-
-    cur.execute("""
-        INSERT INTO mixes (
-            smoked_date,
-            mix_text,
-            staff_name,
-            rating,
-            memo,
-            created_at
-        )
-        VALUES (%s, %s, %s, %s, %s, %s);
-    """, (
-        smoked_date,
-        mix_text,
-        staff_name,
-        rating_value,
-        memo,
-        datetime.now()
-    ))
-
-    conn.commit()
-
-    cur.close()
-    conn.close()
+    save_mix(
+        smoked_date=smoked_date,
+        mix_text=mix_text,
+        staff_name=staff_name,
+        rating=rating,
+        memo=memo
+    )
 
     flash("ミックス履歴を保存しました。")
 
     return redirect(url_for("index"))
+
+
+@app.route("/search", methods=["GET"])
+def search():
+
+    search_date = request.args.get(
+        "date",
+        ""
+    ).strip()
+
+    search_rating = request.args.get(
+        "rating",
+        ""
+    ).strip()
+
+    search_staff = request.args.get(
+        "staff",
+        ""
+    ).strip()
+
+    mixes = []
+
+    has_search = bool(
+        search_date or
+        search_rating or
+        search_staff
+    )
+
+    if has_search:
+
+        conn = get_conn()
+
+        cur = conn.cursor(
+            cursor_factory=psycopg2.extras.RealDictCursor
+        )
+
+        sql = """
+            SELECT
+                id,
+                smoked_date,
+                mix_text,
+                staff_name,
+                rating,
+                memo,
+                created_at
+            FROM mixes
+            WHERE 1 = 1
+        """
+
+        params = []
+
+        if search_date:
+            sql += " AND smoked_date = %s"
+            params.append(search_date)
+
+        if search_rating:
+            try:
+                sql += " AND rating = %s"
+                params.append(int(search_rating))
+            except ValueError:
+                pass
+
+        if search_staff:
+            sql += " AND staff_name ILIKE %s"
+            params.append(f"%{search_staff}%")
+
+        sql += " ORDER BY smoked_date DESC, id DESC;"
+
+        cur.execute(sql, params)
+
+        mixes = cur.fetchall()
+
+        cur.close()
+        conn.close()
+
+    return render_template(
+        "search.html",
+        app_name=APP_NAME,
+        mixes=mixes,
+        search_date=search_date,
+        search_rating=search_rating,
+        search_staff=search_staff,
+        has_search=has_search,
+        active_page="search"
+    )
 
 
 @app.route("/delete/<int:mix_id>", methods=["POST"])
