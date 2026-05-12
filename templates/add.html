@@ -57,8 +57,7 @@
         }
 
         input,
-        textarea,
-        select{
+        textarea{
             width:100%;
             box-sizing:border-box;
             border:2px solid #d5f0ea;
@@ -88,6 +87,24 @@
             border-radius:20px;
             padding:18px;
             margin-bottom:20px;
+        }
+
+        .star-rating{
+            display:flex;
+            gap:8px;
+            margin-bottom:20px;
+        }
+
+        .star-rating span{
+            font-size:42px;
+            color:#d8d8d8;
+            cursor:pointer;
+            user-select:none;
+            transition:0.15s;
+        }
+
+        .star-rating span.active{
+            color:#f4b63d;
         }
 
         .bottom-nav{
@@ -184,14 +201,22 @@
             placeholder="作ったスタッフ"
         >
 
-        <select name="rating">
-            <option value="">評価なし</option>
-            <option value="1">★1</option>
-            <option value="2">★2</option>
-            <option value="3">★3</option>
-            <option value="4">★4</option>
-            <option value="5">★5</option>
-        </select>
+        <input
+            type="hidden"
+            name="rating"
+            id="rating-value"
+            value="0"
+        >
+
+        <div class="star-rating">
+
+            <span onclick="setRating(1)">☆</span>
+            <span onclick="setRating(2)">☆</span>
+            <span onclick="setRating(3)">☆</span>
+            <span onclick="setRating(4)">☆</span>
+            <span onclick="setRating(5)">☆</span>
+
+        </div>
 
         <textarea
             name="memo"
@@ -211,6 +236,30 @@
     <a href="/add" class="nav-item active">登録</a>
     <a href="/search" class="nav-item">検索</a>
 </nav>
+
+<script>
+
+function setRating(rating){
+
+    document.getElementById("rating-value").value = rating;
+
+    const stars = document.querySelectorAll(".star-rating span");
+
+    stars.forEach((star, index) => {
+
+        if(index < rating){
+            star.classList.add("active");
+            star.textContent = "★";
+        }else{
+            star.classList.remove("active");
+            star.textContent = "☆";
+        }
+
+    });
+
+}
+
+</script>
 
 </body>
 </html>
